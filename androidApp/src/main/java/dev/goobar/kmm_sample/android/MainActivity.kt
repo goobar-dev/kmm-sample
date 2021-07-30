@@ -7,6 +7,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import dev.goobar.kmm_sample.PokemonNetworkClient
+import dev.goobar.kmm_sample.ui.PokemonPresenter
+import kotlinx.coroutines.flow.collect
 
 fun greet(): String {
     return Greeting().greeting()
@@ -20,9 +22,12 @@ class MainActivity : AppCompatActivity() {
         val tv: TextView = findViewById(R.id.text_view)
         tv.text = greet()
 
+        val presenter = PokemonPresenter()
+
         lifecycleScope.launchWhenCreated {
-            val response = PokemonNetworkClient().fetchPokemon(4)
-            Toast.makeText(this@MainActivity, "${response.size}", Toast.LENGTH_SHORT).show()
+            presenter.state.collect {
+                tv.text = it.map{ it.name }.fold("") { next, acc -> "$next, $acc"}
+            }
         }
     }
 }

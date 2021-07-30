@@ -8,8 +8,6 @@ import io.ktor.client.features.json.serializer.KotlinxSerializer
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.utils.io.core.use
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class PokemonNetworkClient {
 
@@ -21,8 +19,8 @@ class PokemonNetworkClient {
     }
   }
 
-  suspend fun fetchPokemon(count: Int): List<Pokemon> = withContext(Dispatchers.Default) {
+  suspend fun fetchPokemon(count: Int): List<Pokemon> {
     val response:PokemonRequestResponse = client.get("https://pokeapi.co/api/v2/pokemon/?limit=$count")
-    response.results.also { client.close() }
+    return response.results.also { client.close() }
   }
 }

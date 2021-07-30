@@ -3,8 +3,21 @@ import shared
 
 struct ContentView: View {
 	let greet = Greeting().greeting()
-
-	var body: some View {
-		Text(greet)
-	}
+    @State private var pokemonList: [Pokemon] = []
+    
+    init() {
+        
+    }
+    
+    var body: some View {
+        Text(greet)
+        List(pokemonList, id: \.name){ pokemon in
+            Text(pokemon.name)
+        }
+        .onAppear {
+            PokemonPresenter { pokemon in
+                self.pokemonList = pokemon
+            }
+        }
+    }
 }
